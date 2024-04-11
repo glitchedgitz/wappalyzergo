@@ -15,19 +15,21 @@ type Fingerprints struct {
 
 // Fingerprint is a single piece of information about a tech validated and normalized
 type Fingerprint struct {
-	Cats        []int               `json:"cats"`
-	CSS         []string            `json:"css"`
-	Cookies     map[string]string   `json:"cookies"`
-	JS          []string            `json:"js"`
-	Headers     map[string]string   `json:"headers"`
-	HTML        []string            `json:"html"`
-	Script      []string            `json:"scripts"`
-	ScriptSrc   []string            `json:"scriptSrcs"`
-	Meta        map[string][]string `json:"meta"`
-	Implies     []string            `json:"implies"`
-	Description string              `json:"description"`
-	Website     string              `json:"website"`
-	CPE         string              `json:"cpe"`
+	Cats          []int               `json:"cats"`
+	CSS           []string            `json:"css"`
+	Cookies       map[string]string   `json:"cookies"`
+	JS            []string            `json:"js"`
+	Headers       map[string]string   `json:"headers"`
+	Logo          string              `json:"logo"`
+	DominantColor string              `json:"dominantColor"`
+	HTML          []string            `json:"html"`
+	Script        []string            `json:"scripts"`
+	ScriptSrc     []string            `json:"scriptSrcs"`
+	Meta          map[string][]string `json:"meta"`
+	Implies       []string            `json:"implies"`
+	Description   string              `json:"description"`
+	Website       string              `json:"website"`
+	CPE           string              `json:"cpe"`
 }
 
 // CompiledFingerprints contains a map of fingerprints for tech detection
@@ -38,6 +40,8 @@ type CompiledFingerprints struct {
 
 // CompiledFingerprint contains the compiled fingerprints from the tech json
 type CompiledFingerprint struct {
+	logo          string
+	dominantColor string
 	// cats contain categories that are implicit with this tech
 	cats []int
 	// implies contains technologies that are implicit with this tech
@@ -69,6 +73,15 @@ type AppInfo struct {
 	Description string
 	Website     string
 	CPE         string
+}
+
+type LogoAndInfo struct {
+	Description   string
+	Website       string
+	CPE           string
+	Logo          string
+	DominantColor string
+	Cats          []int
 }
 
 // CatsInfo contains basic information about an App.
@@ -145,18 +158,20 @@ const (
 // loadPatterns loads the fingerprint patterns and compiles regexes
 func compileFingerprint(fingerprint *Fingerprint) *CompiledFingerprint {
 	compiled := &CompiledFingerprint{
-		cats:        fingerprint.Cats,
-		implies:     fingerprint.Implies,
-		description: fingerprint.Description,
-		website:     fingerprint.Website,
-		cookies:     make(map[string]*versionRegex),
-		js:          make([]*versionRegex, 0, len(fingerprint.JS)),
-		headers:     make(map[string]*versionRegex),
-		html:        make([]*versionRegex, 0, len(fingerprint.HTML)),
-		script:      make([]*versionRegex, 0, len(fingerprint.Script)),
-		scriptSrc:   make([]*versionRegex, 0, len(fingerprint.ScriptSrc)),
-		meta:        make(map[string][]*versionRegex),
-		cpe:         fingerprint.CPE,
+		cats:          fingerprint.Cats,
+		implies:       fingerprint.Implies,
+		description:   fingerprint.Description,
+		website:       fingerprint.Website,
+		logo:          fingerprint.Logo,
+		dominantColor: fingerprint.DominantColor,
+		cookies:       make(map[string]*versionRegex),
+		js:            make([]*versionRegex, 0, len(fingerprint.JS)),
+		headers:       make(map[string]*versionRegex),
+		html:          make([]*versionRegex, 0, len(fingerprint.HTML)),
+		script:        make([]*versionRegex, 0, len(fingerprint.Script)),
+		scriptSrc:     make([]*versionRegex, 0, len(fingerprint.ScriptSrc)),
+		meta:          make(map[string][]*versionRegex),
+		cpe:           fingerprint.CPE,
 	}
 
 	for header, pattern := range fingerprint.Cookies {

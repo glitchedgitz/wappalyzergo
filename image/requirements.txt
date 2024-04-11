@@ -1,0 +1,4 @@
+cairosvg
+opencv-python-headless
+numpy
+scikit-learn

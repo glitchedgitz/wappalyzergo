@@ -185,6 +185,26 @@ func (s *Wappalyze) FingerprintWithInfo(headers map[string][]string, body []byte
 	return result
 }
 
+func (s *Wappalyze) FingerprintWithLogoAndInfo(headers map[string][]string, body []byte) map[string]LogoAndInfo {
+	apps := s.Fingerprint(headers, body)
+	result := make(map[string]LogoAndInfo, len(apps))
+
+	for app := range apps {
+		if fingerprint, ok := s.fingerprints.Apps[app]; ok {
+			result[app] = LogoAndInfo{
+				Description:   fingerprint.description,
+				Website:       fingerprint.website,
+				CPE:           fingerprint.cpe,
+				Logo:          fingerprint.logo,
+				Cats:          fingerprint.cats,
+				DominantColor: fingerprint.dominantColor,
+			}
+		}
+	}
+
+	return result
+}
+
 // FingerprintWithCats identifies technologies on a target,
 // based on the received response headers and body.
 // It also returns categories information about the technology, is there's any

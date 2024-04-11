@@ -1,4 +1,4 @@
-module github.com/projectdiscovery/wappalyzergo
+module github.com/glitchedgitz/wappalyzergo
 
 go 1.22.0
 
